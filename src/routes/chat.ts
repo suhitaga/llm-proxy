@@ -77,8 +77,7 @@ chat.post("/v1/chat/completions", async (c) => {
       const { readable, usagePromise } = interceptStream(result.body);
 
       // free the queue slot and record usage once the stream finishes
-      usagePromise.then((usage) => {
-        release();
+      usagePromise.finally(() => release()).then((usage) => {
         if (usage) {
           recordUsage(
             user.id,
